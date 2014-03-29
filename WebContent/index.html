@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Social Network</title>
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/NadaMuruLibs.js"></script>
+<script src="js/bootstrap.js"></script>
+</head>
+<script>checkRoutineIndex();</script>
+<body>
+
+		<div class="row-fluid header">
+			<div class="span12">				
+				<a id="register">Register</a>
+				<a id="login">Login</a>
+				<!-- <a id="forgetpassword">Forget password</a> -->
+			</div>
+		</div>
+
+		<div class="row-fluid content">
+			<div class="span4 blockLeft">
+								
+				<form class="loginform" id="formulaire" method="get">
+					<input id="email" type="text" name="eMail" placeholder="Email" required /><br> 
+					<input id="passwd" type="password" name="password" placeholder="Password" required /> <br>
+					<button class="btn btn-large btn-info" type="submit">Log in</button>					
+				</form>
+				
+				
+			</div>
+	
+	
+
+		</div>
+
+
+		<div class="row-fluid footer">
+			<div class="span2">
+			</div>
+		</div>
+
+		
+<script>
+
+
+////////////////////////////// Fade Manager /////////////////////////////////////////////////////
+$('#register').click(function(){ 
+	  $('#formulaire').hide(1000);
+	  $('#formulaire').replaceWith('<form class="registerform" id="formulaire"  method="get">	<input id="email" type="text" name="eMail" placeholder="Email" required /><br> <input id="passwd" type="password" name="password" placeholder="Password" required /> <br><input id="confirmpasswd" type="password" name="password" placeholder="Confirm password" required /> <br><input id="name" type="text" name="name" placeholder="Name" required /><br> <input id="firstname" type="text" name="firstName" placeholder="First Name" required /> <br><button class="btn btn-large btn-info" type="submit">Sign in</button></form>');
+	  $('#formulaire').hide();
+	  $('#formulaire').show(1000);
+
+	  
+	  $('.registerform').submit(function(e){ 
+
+		  e.preventDefault();	  
+
+		  var login=$('#email').val();
+		  var mdp=$("#passwd").val();
+		  var confirm=$('#confirmpasswd').val();
+		  var name=$('#name').val();
+		  var firstname=$('#firstname').val();
+
+		  if(mdp == confirm){
+	 	  	var param="eMail="+login+"&"+"password="+mdp+"&"+"name="+name+"&"+"firstName="+firstname;
+		 	$.getJSON("http://localhost:8080/MuruganathanNadarajahSocial/createuser",param,function(data){
+			 		 var jsonString = JSON.stringify(data);
+			 		 processingRegisterJSON(jsonString,$('.blockLeft'));
+			 	  });
+		  }
+		  else{
+				var div='<div class="alert alert-block alert-error fade in">';
+				div+='<button class="close" data-dismiss="alert" type="button">X</button>';
+				div+='<h4 class="alert-heading">Erreur de données</h4>';
+				div+='<p>La confirmation du mot de passe ne correspond pas avec le mot de passe.</p></div>';
+				$('.blockLeft').prepend(div);		  }
+	  });
+	  
+});
+
+  
+$('#login').click(function(){
+	  $('#formulaire').hide(1000);
+	  $('#formulaire').replaceWith('<form class="loginform" id="formulaire" method="get"><input id="email" type="text" name="eMail" placeholder="Email" required /><br><input id="passwd" type="password" name="password" placeholder="Password" required /> <br><button class="btn btn-large btn-info" type="submit">Log in</button></form>');
+	  $('#formulaire').hide();
+	  $('#formulaire').show(1000);
+	  
+	  $('.loginform').submit(function(e){ 
+
+		  e.preventDefault();	  
+
+		  var login=$('#email').val();
+		  var mdp=$("#passwd").val();
+		  
+	 	  var param="eMail="+login+"&"+"password="+mdp;
+
+	 	  $.getJSON("http://localhost:8080/MuruganathanNadarajahSocial/user/login",param,function(data){
+	 		  
+	
+	 		 
+	 		 var jsonString = JSON.stringify(data);
+	 		 processingConnexionJSON(jsonString,$('.blockLeft'));
+
+	 	  });
+		  
+	  });
+	  
+});
+
+  
+$('#forgetpassword').click(function(){ 
+	  $('#formulaire').hide(1000);
+	  $('#formulaire').replaceWith('<form id="formulaire" action="" method="get"><input id="email" type="text" name="eMail" placeholder="Email" required /><br><button class="btn btn-large btn-info" type="submit">Submit</button></form>');
+	  $('#formulaire').hide();
+	  $('#formulaire').show(1000);
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+  
+$('.loginform').submit(function(e){ 
+
+		  e.preventDefault();	  
+
+		  var login=$('#email').val();
+		  var mdp=$("#passwd").val();
+		  
+	 	  var param="eMail="+login+"&"+"password="+mdp;
+
+	 	  $.getJSON("http://localhost:8080/MuruganathanNadarajahSocial/user/login",param,function(data){
+	 		  
+	 		 
+	 		 var jsonString = JSON.stringify(data);
+	 		 processingConnexionJSON(jsonString,$('.blockLeft'));
+
+	 	  });
+		  
+});
+
+</script>
+
+</body>
+</html>

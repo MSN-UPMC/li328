@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8" />
+<title>Social Network</title>
+<link href="css/bootstrap.min.css" rel="stylesheet" media="screen">
+<script src="js/jquery-1.9.1.js"></script>
+<script src="js/NadaMuruLibs.js"></script>
+<script src="js/mustache.js"></script>
+<script src="js/bootstrap.js"></script>
+</head>
+<script>checkRoutineMain();</script>
+<body>
+
+	<div class="row-fluid header">
+		<div class="span10 offset1">
+
+			<div class="span1">
+				
+			</div>
+
+			<div class="span3 offset4">
+				<form class="form-inline" id="searchForm" action="" method="get">
+					<div class="input-append">
+						<input  id="search" type="text" name="Search" placeholder="Search"
+							required /> <span class="add-on btn-info"><i
+							class="icon-search "></i> </span>
+
+					</div>
+				</form>
+			</div>
+
+			<div class="span1 offset2">
+				<div class="btn-group">
+					<button class="btn ">
+						<i class=" icon-wrench "> </i>
+					</button>
+					<button class="btn btn-info  dropdown-toggle"
+						data-toggle="dropdown">
+						<span class="caret"></span>
+					</button>
+					<ul class="dropdown-menu">
+						<li><a id="logout" href="#">Log out</a></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="row-fluid content">
+
+		<div class="span10 offset1 contentComsStats">
+			<div class="span4 offset1 contentStats">
+				<div class="Stats">
+					<form class="commentPost" id="formulaire" method="get">
+						<h4>Write a message</h4>
+						<textarea id="message" rows="5"></textarea>
+						<button class="btn btn-large btn-info" type="submit">Post
+							your message</button>
+					</form>
+				</div>
+			</div>
+			<div class="span6 contentComs"></div>
+		</div>
+	</div>
+
+	<div class="row-fluid footer">
+		<div class="span2"></div>
+	</div>
+
+	
+	
+<script>
+  
+// Logout
+makeLogout($('#logout'));
+/////////////////////////
+ 
+// Ecrire Commentaire
+showPostComment($('.commentPost'),$('#message'));
+//////////////////////
+
+// Div Profil a gauche
+createProfil($('.contentStats'),$('.contentComs'));
+///////////////////////
+
+
+// Liste de tous les utilisateurs 
+showUserList($('.contentStats'));
+ 
+ // Commentaire Affichage 	
+showAllMessage($('.contentComs'));
+ 
+// Search
+
+$('#search').popover({placement : 'bottom', title : 'Résultat de la recherche'});
+$('#search').keyup(function(){
+	
+
+	 $.ajaxSetup({async: false});	
+	 var key = getKey();
+	 var word = $(this).val();
+	 var param = "key="+key+"&word="+word;
+	 $.getJSON("http://localhost:8080/MuruganathanNadarajahSocial/user/searchmapreducecomment",param,function(data){
+			
+		 	var JSONString = JSON.stringify(data);
+		 	
+			if(data.length == 0 ){
+				$('.popover-content').text("Aucun résultat trouvé.");
+				$('#search').popover('show');
+			}
+			else{
+				
+				 $.getJSON("http://localhost:8080/MuruganathanNadarajahSocial/user/searchwithoutquery",null,function(listCom){
+				  
+				  var StringAdd ="";
+					 
+				  for(var i=0; i<data.length; i++){
+					for(var j=0; j<listCom.length; j++){
+
+							var obj = listCom[j];
+							var objD = data[i];
+							var JSONString = JSON.stringify(obj); 
+							var JSONStringD = JSON.stringify(objD); 
+
+							
+							var idCom = $.parseJSON(JSONString)['_id'];
+							var idComD = $.parseJSON(JSONStringD)['_id'];
+
+							if(idCom == idComD ){
+ 								StringAdd+="<strong>"+$.parseJSON(JSONString)['name']+" </strong><small> "+$.parseJSON(JSONString)['date'] +"</small><pre>"+$.parseJSON(JSONString)['comment'].substr(0,500)+"</pre>";
+
+							}
+				
+					}
+				  }
+				
+				$('.popover-content').html(StringAdd);
+				$('#search').popover('show');			
+				 });
+			}
+			
+	 });
+     $.ajaxSetup({async: true});
+ 
+});
+
+
+
+
+</script>
+
+</body>
+</html>
