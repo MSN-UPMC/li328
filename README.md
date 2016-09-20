@@ -1,4 +1,4 @@
-LI328
+UPMC University - LI328 (Technologies du web)
 =====
 
-Technologies du web
+A social network project
